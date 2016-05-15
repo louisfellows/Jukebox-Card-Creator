@@ -1,0 +1,54 @@
+<div class="panel panel-default">
+    <div class="panel-heading"><h3><span class="fa fa-users" aria-hidden="true"></span> Users</h3></div>
+    <% if @users.blank? %>
+        <div class="panel-body">
+            There are not any users currently in the system.
+        </div>
+    <% else %>
+        <table class="table table-striped">
+            <thead>
+                <th>
+                    Image
+                </th>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Date Joined
+                </th>
+                <th>
+                    Role
+                </th>
+                <% if can? :manage, User %>
+                    <th>
+                        Actions
+                    </th>
+                <% end %>
+            </thead>
+            <% @users.each do |c| %>
+            <tr>
+                <td>
+                    <%= image_tag c.image_url, alt: c.name, class: "img-circle"%>
+                </td>
+                <td>
+                    <%= link_to c.name, {:action => "show", :id => c.id} -%>
+                </td>
+                <td>
+                    <%= c.created_at %>
+                </td>
+                <td>
+                    <%= c.role %>
+                </td>
+                <% if can? :manage, User %>
+                    <td>
+                        <b> 
+                            <%= link_to "Edit", {:action => :edit, :id => c.id} %> |
+                            <%= link_to "Delete", {:action => :delete, :id => c.id}, data: {:confirm => "Are you sure you want to delete this item?"} %>
+                        </b>
+                    </td>
+                <% end %>
+            </tr>
+            <% end %>
+        </table>
+    <% end %>
+</div>

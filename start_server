@@ -1,0 +1,10 @@
+export FACEBOOK_KEY=1520693624906152
+export FACEBOOK_SECRET=109fc09fedf51fe369a20cc24c02201d
+
+export GOOGLE_CLIENT_ID=17103928603-dum1hicf1mp9t91aom7e8f9ldvkj18a9.apps.googleusercontent.com
+export GOOGLE_SECRET=K8Lz1KiHJAtwNYbUKe-Ca9Eg
+
+export LAST_FM_API_KEY=90e9d7ad765ffb3e0f0401e3a56d13e6
+export LAST_FM_SECRET=82d2c338d4757250bee3b6e952d9cf28
+
+rails server --binding=0.0.0.0
