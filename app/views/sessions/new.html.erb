@@ -1,0 +1,16 @@
+
+<%= form_for(:session, :url => {:controller => 'sessions', :action=>'create'}) do |f| %>
+    <p>
+        <%= f.label :email %>
+        <%= f.email_field :email, class: 'form-control' %>
+    </p>
+    <p>
+        <%= f.label :password %>
+        <%= f.password_field :password, class: 'form-control' %>
+    </p>
+    <p>
+        <%= f.submit "Log in" %>
+    </p>
+<% end %>
+
+<p>New user? <%= link_to "Sign up now!", calendar_path %></p>

@@ -1,4 +1,21 @@
 Rails.application.routes.draw do
+    root 'static#index'
+    get 'static/index' => 'static#index'
+    get 'static/about' => 'static#about'
+    get 'index' => 'static#index'
+
+    get     '/auth/:provider/callback', to: 'sessions#create'
+    get     'login'   => 'sessions#new'
+    post    'login'   => 'sessions#create'
+    delete  'logout'  => 'sessions#destroy'
+    
+    get     'album/index'  =>  'album#index'
+    get     'album/new'  =>  'album#new'
+    get     'album/search' =>   'album#search'
+    get     'album/addAlbum', to: 'album#addAlbum'
+    
+    
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
