@@ -1,48 +1,73 @@
-<% content_for :head do %> 
-    <script type="text/javascript">
-        $(function() {
-            $('#albums').freetile({
-                animate: true,
-                elementDelay: 0,
-                customEvents: "refreshGrid"
-            });
+<script type="text/javascript">
+    $(function() {
+        $('#albums').freetile({
+            animate: true,
+            elementDelay: 0,
+            customEvents: "refreshGrid"
         });
-    </script>
-  
-<% end %>
-
-<div class="container-fluid">
-    <fieldset class="form-group row">
-        <label class="control-label col-md-1" for="title_search">Album Title</label>
-        <div class="col-md-8">
-            <input id="title_search" class: "form-control", placeholder:"Album Title" %>
-            <span id="loading" class='fa fa-circle-o-notch fa-spin fa-fw' aria-hidden='true' style="display: none;"></span>
-        </div>
-    </fieldset>
-</div>
-
-
-<ul id="added_albums" style="list-style: none;">
-</ul>
-
+        $('.sortable tbody').sortable({
+            axis: "y",
+            update: function( event, ui ) {
+                item_id = ui.item.data('item-id')
+                console.log(item_id)
+                position = ui.item.index()
+                $.ajax({
+                    type: 'POST',
+                    url: '/albums/updateRowOrder',
+                    dataType: 'json',
+                    data: { track: {track_id: item_id, row_order_position: position } }
+                })
+            }
+        });
+    });
     
-<% form_for @album, :html => {:class => "form-horizontal"}, :url => "/album/create" do |f| %>
-<% end -%>
+</script>
 
-<!--class="col-sm-2 col-md-3"-->
-
-<ul>
-    <li id="album_template" class="album_box" style="display: none; width:300px;" >
-        <div class="thumbnail">
-            <img id = "image" alt="Album Cover" style="height: 300px; display: block;"/>
-            <div class="caption">
-                <h3><span id = "album"></span> - <span id = "artist"></span></h3>
-                <ul id = "tracks">
-                </ul>
+<ul id="albums" style="list-style: none;">
+    <% @albums.each do |a| %>
+        <li id="album-<%=a.id%>" style="width:300px;" >
+            <div class="thumbnail">
+                <%= image_tag a.image_url, alt: a.title, class: "albumBoxImage"%>
+                <div class="caption">
+                    <hr/>
+                    <h3>
+                        <%= best_in_place a, :title, :as => :input %> 
+                    </h3>
+                    <b>
+                        <%= best_in_place a, :artist, :as => :input %> 
+                    </b>
+                    <div class="btn-group btn-group-justified" role="group" aria-label="controls">
+                        <div class="btn-group" role="group">
+                            <%= link_to "<span class='fa fa-trash-o' aria-hidden='true'></span> Delete".html_safe, album_delete_path(a), remote: true, class: "btn btn-default btn-xs" %>
+                        </div>
+                    </div>    
+                    <hr/>
+                    <table class="table table-bordered table-striped sortable" id="tracks<%=a.id%>">
+                        <tbody>
+                            <% a.tracks.each do |t| %>
+                                <%= render "trackrow", track: t, style: ""%>
+                            <% end %>
+                        </tbody>
+                    </table>
+                    <div class="container-fluid">
+                        <%= form_tag "/albums/addTrack", :method => "post", :class => "form-inline", :remote => true do %>
+                            <%= hidden_field_tag "album_id", a.id %>
+                            <div class="form-group form-group-sm">
+                                <label class="sr-only" for="track_name">Add Track</label>
+                                <%= text_field_tag "track_name", nil, placeholder: "Add Track", class: "form-control album-" + a.id.to_s %>
+                            </div>
+                            <div class="form-group form-group-sm">
+                                <button type="submit" name="commit"  class="btn btn-primary btn-block btn-sm"><span class='fa fa-plus-circle' aria-hidden='true'></span></input>    
+                            </div>
+                        <% end %>
+                    </div>
+                </div>
             </div>
-        </div>
-    </li>
+        </li>
+    <% end -%>
 </ul>
+
+<div id="album-modal" class="modal fade"></div>
 
 
 

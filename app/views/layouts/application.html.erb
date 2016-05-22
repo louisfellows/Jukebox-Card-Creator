@@ -38,13 +38,13 @@
                         </li>
                         <% if current_user %>  
                             <li>
-                                <%=link_to "<span class='fa fa-music' aria-hidden='true'></span> Add Albums".html_safe, {:controller => "album", :action => "new"}%>
+                                <%=link_to "<span class='fa fa-plus' aria-hidden='true'></span> Add Albums".html_safe, {:controller => "album", :action => "new"}%>
                             </li>
                             <li>
-                                <%=link_to "<span class='fa fa-music' aria-hidden='true'></span> Manage Albums".html_safe, {:controller => "album", :action => "index"}%>
+                                <%=link_to "<span class='fa fa-edit' aria-hidden='true'></span> Manage Albums".html_safe, {:controller => "album"}%>
                             </li>
                             <li>
-                                <%=link_to "<span class='fa fa-music' aria-hidden='true'></span> Create Cards".html_safe, {:controller => "album", :action => "index"}%>
+                                <%=link_to "<span class='fa fa-print' aria-hidden='true'></span> Create Cards".html_safe, {:controller => "album", :action => "index"}%>
                             </li>
                             <ul class="nav navbar-nav pull-right">
                                 <li><%= image_tag current_user.image_url, alt: current_user.name, class: "img-circle"%></li>
@@ -70,12 +70,14 @@
         </nav>
       
   
-        <div id = "content">
-            <% flash.each do |key, value| %>
-                <div class="alert alert-<%= key %>">
-                    <%= value %>
-                </div>
-            <% end %>      
+        <div id = "content" class="container-fluid">
+            <div id = "flasher">   
+                <% flash.each do |key, value| %>
+                    <div class="alert alert-info notice-<%= key %>">
+                        <%= value %>
+                    </div>
+                <% end %>                  
+            </div>
             <%= yield %>
         </div>
         <%= debug(params) if Rails.env.development? %>
