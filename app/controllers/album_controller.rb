@@ -1,31 +1,54 @@
 class AlbumController < ApplicationController
-    require "erb"
-    include ERB::Util
+    respond_to :html, :json
 
     load_and_authorize_resource :except => [:search, :getAlbumFromLastFM]
 
-    def new
-        
+    def index
     end
-    
+
+    def show
+    end
+
+    def new
+    end
+
     def create
-    
+    end
+
+    def edit
+    end
+
+    def update
+        respond_to do |format|
+            format.json do
+                @album = Album.find(params[:id])
+                @album.update_attributes(album_params)
+                respond_with @album
+            end
+        end
+    end
+
+    def delete
+    end
+
+    def destroy
+        @album = Album.find(params[:id])
+        @album.destroy
+    end
+
+    def delete
+        @album = Album.find(params[:album_id])
     end
     
     def search
         respond_to do |format|
             format.json do
-                term = I18n.transliterate(params[:term])
-            
-                url = 'http://ws.audioscrobbler.com/2.0/?method=album.search&album=' + term.to_s + '&api_key=' + ENV['LAST_FM_API_KEY'].to_s + '&limit=20&format=json'   
-                        
-                response = getJSONResponse(url)
+                albums = Album.searchLastFM(params[:term])
                 
-                jsonOut = []
+                jsonOut =[]
                 position = 0
-                response['results']['albummatches']['album'].each do |a|
-                    jsonOut[position] = { "label" => a['artist'] + ' - ' + a['name'],
-                                   "value" => a['name'] } 
+                albums.each do |a|
+                    jsonOut[position] = { "label" => a.artist + ' - ' + a.title, "value" => a.title } 
                     position += 1
                 end
                 render :json => jsonOut.to_json
@@ -36,85 +59,38 @@ class AlbumController < ApplicationController
     def addAlbum
         respond_to do |format|
             format.json do
-                artist = I18n.transliterate(params[:artist])
-                album = I18n.transliterate(params[:album])
-            
-                url = 'http://ws.audioscrobbler.com/2.0/?method=album.getInfo&album=' + album.to_s + '&artist=' + artist.to_s + '&api_key=' + ENV['LAST_FM_API_KEY'].to_s + '&format=json'
-                
-                response = getJSONResponse(url)
-                
-                imgUrl = ""
-                imgSize = 0
-                response['album']['image'].each do |i|
-                    case i['size']
-                        when "small"
-                            currentSize=2
-                        when "medium"
-                            currentSize=3
-                        when "large"
-                            currentSize=4
-                        when "extralarge"
-                            currentSize=5
-                        when "mega"
-                            currentSize=6
-                        else
-                            currentSize=1
-                    end
-                    if currentSize > imgSize
-                        imgUrl = i['#text']
-                        imgSize = currentSize
-                    end
-                end
-                
-                puts response['album']['tracks']['track']
-                
-                tracks = []
-                position = 0
-                response['album']['tracks']['track'].each do |t|
-                    rank = t["rank"]
-                    if (rank == nil) 
-                        rank = t["@attr"]["rank"]
-                        if (rank == nil) 
-                            rank = position
-                        end
-                    end
-                    tracks[position] = {"track" => t['rank'], "title" => t["name"]}
-                    position += 1
-                end
-                
-                jsonOut = Hash.new
-                jsonOut = { "album"     => response['album']['name'],
-                            "artist"    => response['album']['artist'],
-                            "image"     => imgUrl,
-                            "tracks"    => tracks}
-
-                createAlbum(response['album']['name'], 
-                            response['album']['artist'], 
-                            imgUrl, 
-                            tracks)
-                
-                render :json => jsonOut.to_json
+                album = Album.getAlbumFromLastFM(params[:artist], params[:album])
+                album.user_id = current_user.id
+                album.save()
+                render :json => album.as_json(include: :tracks)
             end        
         end
     end
     
-    private 
-    
-    def getJSONResponse(url)
-        uri = URI(url)
-        urlresponse = Net::HTTP.get(uri)
-        response = JSON.parse(urlresponse)
+    def updateRowOrder
+        respond_to do |format|
+            format.json do
+                puts (:params)
+                movedTrack = Track.find(params[:track][:track_id])
+                newPosition = params[:track][:row_order_position].to_i
+                newPosition += 1 #jQuery is 0 indexed, out albums are 1 indexed
+                album = movedTrack.album
+                album.updateTrackOrder(movedTrack, newPosition)
+                render :json => album.as_json(include: :tracks)
+            end        
+        end
     end
     
-    def createAlbum(title, artist, imageUrl, tracks)
-        album = Album.create(:user_id => current_user.id, :title=>title, :artist=>artist, :image_url => imageUrl)
-        album.save()
-        tracks.each() do |t|
-            if t["track"] == nil 
-                t["track"] = 0 
-            end
-            track = Track.create(:track_name => t["title"], :track_number => t["track"], :album => album)
-            track.save()
-        end
+    def addTrack
+        puts (params)
+        album = Album.find(params[:album_id])
+        track = album.addTrack(params[:track_name])
+        @album = album
+        @track = track
+    end
+    
+    private     
+    def album_params
+        params.require(:album).permit(:title, :artist)
     end
 end

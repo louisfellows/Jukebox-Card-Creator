@@ -1,0 +1,15 @@
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Delete Track</h3>
+        </div>
+        <div class="modal-body">
+            <ul class="errors"></ul>
+            Are you sure you wish to delete <b><%= @track.track_name %></b>?
+        </div>
+        <div class="modal-footer">
+            <%= link_to "Yes", track_path(@track), method: :delete, remote: true, class: "btn btn-danger" %>
+            <%= link_to "No", "#", class: "btn btn-default", data: { dismiss: "modal" } %>
+        </div>
+    </div>
+</div>

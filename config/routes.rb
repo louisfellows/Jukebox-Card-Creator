@@ -9,12 +9,18 @@ Rails.application.routes.draw do
     post    'login'   => 'sessions#create'
     delete  'logout'  => 'sessions#destroy'
     
-    get     'album/index'  =>  'album#index'
-    get     'album/new'  =>  'album#new'
-    get     'album/search' =>   'album#search'
-    get     'album/addAlbum', to: 'album#addAlbum'
     
-    
+    resources :album do
+        get "delete"
+    end
+    get 'albums/search' =>   'album#search'
+    get 'albums/addAlbum', to: 'album#addAlbum'   
+    post 'albums/addTrack', to: 'album#addTrack'   
+    post 'albums/updateRowOrder', to: 'album#updateRowOrder'   
+
+    resources :track do
+        get "delete"
+    end    
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

@@ -15,5 +15,6 @@
 //= require jquery-ui
 //= require bootstrap
 //= require freetile.min
+//= require best_in_place
 //= require turbolinks
 //= require_tree .

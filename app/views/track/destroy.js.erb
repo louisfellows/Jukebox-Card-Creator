@@ -1,0 +1,25 @@
+<% if @track.errors.any? %>
+    <% @track.errors.full_messages.each do |message| %>
+    $("#flasher").append($("<div class='alert alert-danger alert-dismissible' />").html("<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><span class='fa fa-exclamation-triangle' aria-hidden='true'></span> <%= message.html_safe %>"));
+<% end %>
+<% else %>
+    $("#flasher").append($("<div style='display: none;' id='trackflash-<%=@track.id %>' class='alert alert-success alert-dismissible' />").html("<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><span class='fa fa-info' aria-hidden='true'></span> <%=@track.track_name %> deleted"));
+    $("#trackflash-<%=@track.id %>").show("blind");
+    
+    window.setTimeout(function() {
+        $("#trackflash-<%=@track.id %>").hide({
+            effect: "blind",
+            complete: function() {
+                    $("#trackflash-<%=@track.id %>").remove();
+                }
+            });
+        }, 5000);
+    
+    $("#track-<%=@track.id %>").hide({
+        complete: function() {
+                $("#track-<%=@track.id %>").remove();
+            }
+        });
+        
+    $("#album-modal").modal("hide");
+<% end %>

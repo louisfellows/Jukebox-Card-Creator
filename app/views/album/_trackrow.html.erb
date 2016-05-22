@@ -1,0 +1,8 @@
+<tr id="track-<%=track.id%>" data-item-id=<%= "#{track.id}" %> class="item" style="<%=style%>">
+    <td>
+        <%= best_in_place track, :track_name, :as => :input %> 
+    </td>
+    <td>
+        <%= link_to "<span class='fa fa-trash-o' aria-hidden='true'></span> Delete".html_safe, track_delete_path(track), remote: true, :class => "btn btn-default btn-xs pull-right" %>
+    </td>
+</tr>

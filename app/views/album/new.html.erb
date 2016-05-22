@@ -1,62 +1,59 @@
-<% content_for :head do %> 
-    <script type="text/javascript">
-        $(function() {
-            $( "#title_search" ).autocomplete({
-                source: "/album/search",
-                search: function() {
-                    $("#loading").show();
-                },
-                response: function() {
-                    $("#loading").hide();
-                },
-                select: function( event, ui ) {
-                    $("#loading").show();
-                    values = ui.item.label.split('-')
-                    path = "/album/addAlbum"
-                    query = "?artist=" + encodeURIComponent(values[0].trim()) + "&album=" + encodeURIComponent(values[1].trim())
-                    
-                    var albumdetails = $.getJSON( path + query )
-                        .done(function( data ) {
-                            temp = $("#album_template").clone();
-                            temp.attr("id", data.album + "_" + data.artist)
-                            temp.find("#album").append(data.album);
-                            temp.find("#artist").append(data.artist);
-                            temp.find("#image").attr("src", data.image);
-                            
-                            data.tracks.forEach(function (item, index) {
-                                temp.find("#tracks").append("<li>" + item.title + "</li>");
-                            });
-                            
-                            //temp.show();
-                            $("#added_albums").prepend(temp);
-                            $("#added_albums").trigger( "refreshGrid");
-                            $("#title_search").val("");
-                        })
-                        .fail(function() {
-                            alert( "error" );
-                        })
-                        .always(function() {
-                            $("#loading").hide();
+<script type="text/javascript">
+    $(function() {
+        $( "#title_search" ).autocomplete({
+            source: "/albums/search",
+            search: function() {
+                $("#loading").show();
+            },
+            response: function() {
+                $("#loading").hide();
+            },
+            select: function( event, ui ) {
+                $("#loading").show();
+                values = ui.item.label.split('-')
+                path = "/albums/addAlbum"
+                query = "?artist=" + encodeURIComponent(values[0].trim()) + "&album=" + encodeURIComponent(values[1].trim())
+                
+                var albumdetails = $.getJSON( path + query )
+                    .done(function( data ) {
+                        temp = $("#album_template").clone();
+                        temp.attr("id", data.title + "_" + data.artist)
+                        temp.find("#album").append(data.title);
+                        temp.find("#artist").append(data.artist);
+                        temp.find("#image").attr("src", data.image_url);
+                        
+                        data.tracks.forEach(function (item, index) {
+                            temp.find("#tracks").append("<li>" + item.track_name + "</li>");
                         });
-                }
-            });
-            $('#added_albums').freetile({
-                animate: true,
-                elementDelay: 0,
-                customEvents: "refreshGrid",
-                persistentCallback: true,
-                callback: function () {
-                    $("#added_albums").children(".album_box").each(function() {
-                        if (!$(this).is(":visible")) {
-                            $(this).show("blind"); 
-                        }
+                        
+                        //temp.show();
+                        $("#added_albums").prepend(temp);
+                        $("#added_albums").trigger( "refreshGrid");
+                        $("#title_search").val("");
+                    })
+                    .fail(function() {
+                        alert( "error" );
+                    })
+                    .always(function() {
+                        $("#loading").hide();
                     });
-                }
-            });
+            }
         });
-    </script>
-  
-<% end %>
+        $('#added_albums').freetile({
+            animate: true,
+            elementDelay: 0,
+            customEvents: "refreshGrid",
+            persistentCallback: true,
+            callback: function () {
+                $("#added_albums").children(".album_box").each(function() {
+                    if (!$(this).is(":visible")) {
+                        $(this).show("blind"); 
+                    }
+                });
+            }
+        });
+    });
+</script>
 
 <div class="container-fluid">
     <fieldset class="form-group row">
@@ -72,16 +69,10 @@
 <ul id="added_albums" style="list-style: none;">
 </ul>
 
-    
-<% form_for @album, :html => {:class => "form-horizontal"}, :url => "/album/create" do |f| %>
-<% end -%>
-
-<!--class="col-sm-2 col-md-3"-->
-
 <ul>
     <li id="album_template" class="album_box" style="display: none; width:300px;" >
         <div class="thumbnail">
-            <img id = "image" alt="Album Cover" style="height: 300px; display: block;"/>
+            <img id = "image" alt="Album Cover" class="albumBoxImage"/>
             <div class="caption">
                 <h3><span id = "album"></span> - <span id = "artist"></span></h3>
                 <ul id = "tracks">
