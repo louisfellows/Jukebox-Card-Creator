@@ -85,8 +85,8 @@ class Album < ActiveRecord::Base
             end
         end
     end
-    
-    def addTrack(newTrackTitle)
+        
+    def normaliseTrackOrder
         tracklist = tracks.order('tracks.track_number ASC').all
         position = 1
         tracklist.each do |t|
@@ -94,13 +94,7 @@ class Album < ActiveRecord::Base
             position += 1
             t.save()
         end
-        track = Track.new({:track_name => newTrackTitle, :track_number => position})
-        tracks << track
-        track.save()
-        save()  
-        track
     end
-    
     private 
     
     def self.getJSONResponse(url)

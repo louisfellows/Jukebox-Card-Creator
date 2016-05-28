@@ -15,12 +15,13 @@ Rails.application.routes.draw do
     end
     get 'albums/search' =>   'album#search'
     get 'albums/addAlbum', to: 'album#addAlbum'   
-    post 'albums/addTrack', to: 'album#addTrack'   
     post 'albums/updateRowOrder', to: 'album#updateRowOrder'   
 
     resources :track do
         get "delete"
     end    
+    
+    resources :album_listing  
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

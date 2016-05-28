@@ -1,7 +1,7 @@
 <% if @album.errors.any? %>
     <%=render "jsDisplayErrors", model: @album%>
 <% else %>
-    $.bootstrapPurr("<span class='fa fa-info' aria-hidden='true'></span> <%=@album.title %> deleted", {
+    $.bootstrapPurr("<span class='fa fa-info' aria-hidden='true'></span> <%=@track.track_name %> added", {
                 type:'success',
                     offset: {
                         amount: 60,
@@ -9,13 +9,13 @@
                     }
                 });
     
-    $("#album-<%=@album.id %>").hide({
-        effect: "puff",
+    $("#tracks<%=@album.id%> tbody").append('<%=escape_javascript(render "trackrow", track: @track, style: "display: none;")%>');
+    
+    $("#track-<%=@track.id%>").show({
+        effect: "blind",
         complete: function() {
-                $("#album-<%=@album.id %>").remove();
                 $("#albums").trigger("refreshGrid");
+                $(".album-<%=@album.id%>").val("");
             }
         });
-        
-    $("#album-modal").modal("hide");
 <% end %>

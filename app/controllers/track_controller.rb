@@ -12,7 +12,18 @@ class TrackController < ApplicationController
     def new
     end
 
-    def create
+    def create   
+        album = Album.find(params[:album_id])
+        
+        album.normaliseTrackOrder
+        
+        track = Track.new({:track_name => params[:track_name], :track_number => album.tracks.length + 1})
+        album.tracks << track
+        track.save()
+        album.save()  
+        
+        @album = album
+        @track = track
     end
 
     def edit

@@ -15,7 +15,10 @@ class Ability
         elsif user.is? :default
             puts "ISDEFAULT"
             can :manage, Album, :user_id => user.id         
-            can :manage, Track, :album => {:user_id => user.id}         
+            can :manage, Track, :album => {:user_id => user.id}
+            can :create, Track
+            can :manage, TrackListing, :user_id => user.id
+            can :create, TrackListing
             can :update, User do |permission_user|
                 permission_user.id == user.id
             end            

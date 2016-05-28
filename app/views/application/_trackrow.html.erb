@@ -1,5 +1,8 @@
 <tr id="track-<%=track.id%>" data-item-id=<%= "#{track.id}" %> class="item" style="<%=style%>">
     <td>
+        <span class ="handle fa fa-arrows-v" aria-hidden="true"></span>
+    </td>
+    <td>
         <%= best_in_place track, :track_name, :as => :input %> 
     </td>
     <td>

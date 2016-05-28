@@ -50,7 +50,7 @@
                         </tbody>
                     </table>
                     <div class="container-fluid">
-                        <%= form_tag "/albums/addTrack", :method => "post", :class => "form-inline", :remote => true do %>
+                        <%= form_tag "/track", :method => "post", :class => "form-inline", :remote => true do %>
                             <%= hidden_field_tag "album_id", a.id %>
                             <div class="form-group form-group-sm">
                                 <label class="sr-only" for="track_name">Add Track</label>

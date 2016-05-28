@@ -80,15 +80,7 @@ class AlbumController < ApplicationController
             end        
         end
     end
-    
-    def addTrack
-        puts (params)
-        album = Album.find(params[:album_id])
-        track = album.addTrack(params[:track_name])
-        @album = album
-        @track = track
-    end
-    
+        
     private     
     def album_params
         params.require(:album).permit(:title, :artist)

@@ -1,0 +1,8 @@
+<% model.errors.full_messages.each do |message| %>
+$.bootstrapPurr("<span aria-hidden='true'>&times;</span> <%= message.html_safe %>", {
+                type:'danger',
+                    offset: {
+                        amount: 60,
+                        from: 'top'
+                    }
+                });

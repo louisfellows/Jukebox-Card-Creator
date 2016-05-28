@@ -2,6 +2,9 @@
     margin-top: 55px;
 }
 
+.handle {
+    cursor:move
+}
 .albumBoxImage {
     height: 300px; 
     display: block;

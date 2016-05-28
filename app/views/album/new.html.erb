@@ -31,8 +31,14 @@
                         $("#added_albums").trigger( "refreshGrid");
                         $("#title_search").val("");
                     })
-                    .fail(function() {
-                        alert( "error" );
+                    .fail(function(xhr, ajaxOptions, thrownError) {
+                            $.bootstrapPurr("<b>An Error Occurred: </b>" + thrownError, {
+                            type:'danger',
+                                offset: {
+                                    amount: 60,
+                                    from: 'top'
+                                }
+                            });
                     })
                     .always(function() {
                         $("#loading").hide();
@@ -57,15 +63,12 @@
 
 <div class="container-fluid">
     <fieldset class="form-group row">
-        <label class="control-label col-md-1" for="title_search">Album Title</label>
-        <div class="col-md-8">
-            <input id="title_search" class: "form-control", placeholder:"Album Title" %>
+            <input id="title_search" class="form-control", placeholder="Album Title" %>
             <span id="loading" class='fa fa-circle-o-notch fa-spin fa-fw' aria-hidden='true' style="display: none;"></span>
-        </div>
     </fieldset>
 </div>
 
-
+<hr/>
 <ul id="added_albums" style="list-style: none;">
 </ul>
 
