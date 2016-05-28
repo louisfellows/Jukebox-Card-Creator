@@ -1,17 +1,137 @@
+<script>
+    $(function() {
+        
+        var unassign_button = ''
+        
+        $( ".album-list-sortable > li, .drop-target > li" ).draggable({
+            cancel: "a.ui-icon", 
+            revert: "invalid", 
+            containment: "document",
+            helper: "clone",
+            cursor: "move",
+            cursorAt: { top: 10, left: 10 }
+        });
+  
+        $('.drop-target').droppable({
+            accept: ".album-list-sortable > li, .drop-target > li",
+            activeClass: "info",
+            drop: function( event, ui ) {
+                addToNumber( ui.draggable, $(this) );
+            }
+        });
+
+        $('.album-list-sortable').droppable({
+            accept: ".album-list-sortable > li, .drop-target > li",
+            activeClass: "info",
+            drop: function( event, ui ) {
+                addToNumber( ui.draggable, $(this) );
+            }
+        });
+        
+        $(".add-remove-item").each( function() {
+                                        addRemoveButton($(this));
+                                    });
+    });    
+             
+    function addToNumber( $item, $target ) {            
+        $item.fadeOut(function() {
+            addRemoveButton($item);
+            var number_id = $target.attr("data-id");
+            var album_id = $item.attr("data-id")
+            $.ajax({
+                type: 'POST',
+                url: '/album_listing',
+                dataType: 'json',
+                data: { album_listing: {number: number_id, album_id: album_id } }
+            });
+            $item
+                .appendTo( $target )
+                .fadeIn(function() {
+                    $target.droppable( "disable" );
+                    enableUnfilled();
+                });
+        });
+    }
+    
+    function enableUnfilled() {
+        $('.drop-target').each(function() {
+            if ($(this).children().length == 0) {
+                $(this).droppable( "enable" );
+            }
+        });
+    }
+    
+    function addRemoveButton($element) {
+        if ($element.find( "button.close" ).length == 0) {
+            $element.append(
+                $('<button type="button" class="close" aria-label="unassign"><span aria-hidden="true">&times;</span></button>')
+                .click(function () {
+                    var number_id = $element.parent().attr("data-id");
+                    var album_id = $element.attr("data-id")
+                    $.ajax({
+                        type: 'DELETE',
+                        url: '/album_listing/delete',
+                        dataType: 'json',
+                        data: { number: number_id, album_id: album_id }
+                    });
+                    $element.fadeOut(function() {
+                        $element
+                            .find( "button.close" ).remove().end()
+                            .prependTo($('.album-list-sortable'))
+                            .fadeIn();
+                        enableUnfilled();
+                    });
+                })
+            );
+        }
+    }
+        
+</script>
+
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-6">
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     <h3 class="panel-title">
-                        Panel title
+                        Jukebox Albumlist
                     </h3>
                 </div>
-                <div class="panel-body">
-                    Panel content
-                </div>
-                <div class="panel-footer">
-                    Panel footer
+                <div class="panel-body" style="max-height: 400px; overflow-y:scroll">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 20%">
+                                        Album Number
+                                    </th>
+                                    <th style="width: *">
+                                        Album
+                                    </th>
+                                <tr>
+                            </thead>
+                            <tbody>
+                                <% (0..99).each do |n| %>
+                                    <tr>
+                                        <td>
+                                            <b><%=n%></b>
+                                        </td>
+                                        <td class="drop-target" id="n<%=n%>" data-id="<%=n%>">
+                                            <% listing = @listings.select{|l| l.number == n} %>
+                                            <% if not listing.empty? %>
+                                                <% l = listing.first %>
+                                                <% album = l.album %>
+                                                <li id="a<%=album.id%>" data-id="<%=album.id%>" class="list-group-item add-remove-item">
+                                                    <b>
+                                                        <%= album.title %>
+                                                    </b>
+                                                    - <%= album.artist %>
+                                                </li>
+                                            <% end %>
+                                        </td>
+                                    </tr>          
+                                <% end %>
+                            </tbody>
+                        </table>
                 </div>
             </div>
         </div>
@@ -19,14 +139,20 @@
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     <h3 class="panel-title">
-                        Panel title
+                        Unassigned Albums
                     </h3>
                 </div>
-                <div class="panel-body">
-                    Panel content
-                </div>
-                <div class="panel-footer">
-                    Panel footer
+                <div class="panel-body" style="max-height: 400px; overflow-y:scroll">
+                    <ul class="list-group album-list-sortable">
+                        <% @albums.each do |a| %>
+                            <li id="a<%=a.id%>" data-id="<%=a.id%>" class="list-group-item">
+                                <b>
+                                    <%= a.title %>
+                                </b>
+                                - <%= a.artist %>
+                            </li>
+                        <% end %>
+                    </ul>
                 </div>
             </div>
         </div>

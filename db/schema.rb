@@ -11,7 +11,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160515183354) do
+ActiveRecord::Schema.define(version: 20160528133358) do
+
+  create_table "album_listings", force: :cascade do |t|
+    t.integer  "user_id",    limit: 4, null: false
+    t.integer  "album_id",   limit: 4, null: false
+    t.integer  "number",     limit: 4, null: false
+    t.datetime "created_at",           null: false
+  end
 
   create_table "albums", force: :cascade do |t|
     t.integer  "user_id",    limit: 4,    null: false
@@ -19,13 +26,6 @@ ActiveRecord::Schema.define(version: 20160515183354) do
     t.string   "image_url",  limit: 1024
     t.datetime "created_at",              null: false
     t.string   "artist",     limit: 100,  null: false
-  end
-
-  create_table "track_listings", force: :cascade do |t|
-    t.integer  "number",     limit: 4, null: false
-    t.integer  "user_id",    limit: 4, null: false
-    t.integer  "track_id",   limit: 4, null: false
-    t.datetime "created_at",           null: false
   end
 
   create_table "tracks", force: :cascade do |t|

@@ -44,7 +44,7 @@
                                 <%=link_to "<span class='fa fa-edit' aria-hidden='true'></span> Manage Albums".html_safe, {:controller => "album"}%>
                             </li>
                             <li>
-                                <%=link_to "<span class='fa fa-print' aria-hidden='true'></span> Create Cards".html_safe, {:controller => "track_listing", :action => "index"}%>
+                                <%=link_to "<span class='fa fa-print' aria-hidden='true'></span> Create Cards".html_safe, {:controller => "album_listing", :action => "index"}%>
                             </li>
                             <ul class="nav navbar-nav pull-right">
                                 <li><%= image_tag current_user.image_url, alt: current_user.name, class: "img-circle"%></li>

@@ -1,6 +1,7 @@
 class Album < ActiveRecord::Base
     belongs_to :user
     has_many :tracks, -> { order 'track_number ASC' }
+    has_one :album_listing
 
     def self.searchLastFM(term)
         term = I18n.transliterate(term)
