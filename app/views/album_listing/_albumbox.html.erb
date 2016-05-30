@@ -1,0 +1,15 @@
+<div id="a<%=album.id%>" 
+    data-id="<%=album.id%>" 
+    class="media draggable list-group-item 
+    <% if removeButton %>
+        add-remove-item
+    <% end %>
+    ">
+    <div class="media-left">
+        <img class="media-object" style="width:64px; height:64px" src="<%=album.image_url%>" alt="<%=album.title%>">
+    </div>
+    <div class="media-body">
+        <h4 class="media-heading"><%=album.title%></h4>
+        <%=album.artist%>
+    </div>
+</div>

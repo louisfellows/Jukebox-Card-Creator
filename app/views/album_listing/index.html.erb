@@ -3,25 +3,27 @@
         
         var unassign_button = ''
         
-        $( ".album-list-sortable > li, .drop-target > li" ).draggable({
-            cancel: "a.ui-icon", 
+        $( ".draggable" ).draggable({
+            cancel: ".close", 
             revert: "invalid", 
-            containment: "document",
-            helper: "clone",
-            cursor: "move",
-            cursorAt: { top: 10, left: 10 }
+            helper: function() {
+                img = $(this).find("img").attr("src");
+                return $( "<img src='"+img+"' style='width:64px; height:64px' class='img-circle'/>" );
+            },
+            cursorAt: { top: 30, left: 30 },
+            zIndex: 100
         });
   
         $('.drop-target').droppable({
-            accept: ".album-list-sortable > li, .drop-target > li",
-            activeClass: "info",
-            drop: function( event, ui ) {
-                addToNumber( ui.draggable, $(this) );
-            }
-        });
-
-        $('.album-list-sortable').droppable({
-            accept: ".album-list-sortable > li, .drop-target > li",
+            accept: function(draggable) {
+                if (!(draggable.is(".draggable"))) {
+                    return false;
+                }
+                if ($(this).children().length > 0) {
+                    return false;
+                }
+                return true;
+            },
             activeClass: "info",
             drop: function( event, ui ) {
                 addToNumber( ui.draggable, $(this) );
@@ -44,26 +46,24 @@
                 dataType: 'json',
                 data: { album_listing: {number: number_id, album_id: album_id } }
             });
+            if ($item.parent().is(".drop-target")) {
+                number_id = $item.parent().attr("data-id");
+                $.ajax({
+                    type: 'DELETE',
+                    url: '/album_listing/delete',
+                    dataType: 'json',
+                    data: { number: number_id, album_id: album_id }
+                });
+            }
             $item
                 .appendTo( $target )
-                .fadeIn(function() {
-                    $target.droppable( "disable" );
-                    enableUnfilled();
-                });
-        });
-    }
-    
-    function enableUnfilled() {
-        $('.drop-target').each(function() {
-            if ($(this).children().length == 0) {
-                $(this).droppable( "enable" );
-            }
+                .fadeIn();
         });
     }
     
     function addRemoveButton($element) {
         if ($element.find( "button.close" ).length == 0) {
-            $element.append(
+            $element.prepend(
                 $('<button type="button" class="close" aria-label="unassign"><span aria-hidden="true">&times;</span></button>')
                 .click(function () {
                     var number_id = $element.parent().attr("data-id");
@@ -79,7 +79,6 @@
                             .find( "button.close" ).remove().end()
                             .prependTo($('.album-list-sortable'))
                             .fadeIn();
-                        enableUnfilled();
                     });
                 })
             );
@@ -88,71 +87,81 @@
         
 </script>
 
+
+
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-12">
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     <h3 class="panel-title">
-                        Jukebox Albumlist
+                        Card Creation - Step 1
                     </h3>
                 </div>
-                <div class="panel-body" style="max-height: 400px; overflow-y:scroll">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th style="width: 20%">
-                                        Album Number
-                                    </th>
-                                    <th style="width: *">
-                                        Album
-                                    </th>
-                                <tr>
-                            </thead>
-                            <tbody>
-                                <% (0..99).each do |n| %>
-                                    <tr>
-                                        <td>
-                                            <b><%=n%></b>
-                                        </td>
-                                        <td class="drop-target" id="n<%=n%>" data-id="<%=n%>">
-                                            <% listing = @listings.select{|l| l.number == n} %>
-                                            <% if not listing.empty? %>
-                                                <% l = listing.first %>
-                                                <% album = l.album %>
-                                                <li id="a<%=album.id%>" data-id="<%=album.id%>" class="list-group-item add-remove-item">
-                                                    <b>
-                                                        <%= album.title %>
-                                                    </b>
-                                                    - <%= album.artist %>
-                                                </li>
-                                            <% end %>
-                                        </td>
-                                    </tr>          
-                                <% end %>
-                            </tbody>
-                        </table>
+                <div class="panel-body">
+                    Please move the albums to their position in the Jukebox album listing on the left. The position will be used to assign numbers to the cards.
+                </div>
+                <div class="panel-footer">
+                    <%=link_to "<span class='fa fa-arrow-right' aria-hidden='true'></span> Next Step".html_safe,  {:controller => "album_listing", :action => "index"}, class: "btn pull-right btn-primary" %>
+                    <div class="clearfix"></div>
                 </div>
             </div>
         </div>
+    </div>
+    <div class="row">
         <div class="col-md-6">
-            <div class="panel panel-primary">
+            <div class="panel panel-info">
                 <div class="panel-heading">
                     <h3 class="panel-title">
                         Unassigned Albums
                     </h3>
                 </div>
-                <div class="panel-body" style="max-height: 400px; overflow-y:scroll">
-                    <ul class="list-group album-list-sortable">
+                <div class="panel-body" style="max-height: 600px; overflow-y:scroll">
+                    <div class="list-group album-list-sortable">
                         <% @albums.each do |a| %>
-                            <li id="a<%=a.id%>" data-id="<%=a.id%>" class="list-group-item">
-                                <b>
-                                    <%= a.title %>
-                                </b>
-                                - <%= a.artist %>
-                            </li>
+                            <%= render "albumbox", album: a, removeButton: false %>
                         <% end %>
-                    </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        Jukebox Albumlist
+                    </h3>
+                </div>
+                <div class="panel-body" style="max-height: 600px; overflow-y:scroll">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th style="width: 20%">
+                                    Album Number
+                                </th>
+                                <th style="width: *">
+                                    Album
+                                </th>
+                            <tr>
+                        </thead>
+                        <tbody>
+                            <% (0..99).each do |n| %>
+                                <tr>
+                                    <td>
+                                        <b><%=n%></b>
+                                    </td>
+                                    <td class="drop-target" id="n<%=n%>" data-id="<%=n%>">
+                                        <% listing = @listings.select{|l| l.number == n} %>
+                                        <% if not listing.empty? %>
+                                            <% l = listing.first %>
+                                            <% album = l.album %>
+                                            <%= render "albumbox", album: album, removeButton: true %>
+                                        <% end %>
+                                    </td>
+                                </tr>          
+                            <% end %>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
