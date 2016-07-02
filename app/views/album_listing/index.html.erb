@@ -155,7 +155,11 @@
                                         <% if not listing.empty? %>
                                             <% l = listing.first %>
                                             <% album = l.album %>
-                                            <%= render "albumbox", album: album, removeButton: true %>
+                                            <% if not album.nil? %>
+                                                <%= render "albumbox", album: album, removeButton: true %>
+                                            <% else %>
+                                                <% l.destroy %>
+                                            <% end %>
                                         <% end %>
                                     </td>
                                 </tr>          

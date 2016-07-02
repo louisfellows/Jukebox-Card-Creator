@@ -20,7 +20,7 @@
                         temp.attr("id", data.title + "_" + data.artist)
                         temp.find("#album").append(data.title);
                         temp.find("#artist").append(data.artist);
-                        temp.find("#image").attr("src", data.image_url);
+                        temp.find("#image").attr("src", data.image);
                         
                         data.tracks.forEach(function (item, index) {
                             temp.find("#tracks").append("<li>" + item.track_name + "</li>");

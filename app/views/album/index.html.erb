@@ -27,7 +27,7 @@
     <% @albums.each do |a| %>
         <li id="album-<%=a.id%>" style="width:300px;" >
             <div class="thumbnail">
-                <%= image_tag a.image_url, alt: a.title, class: "albumBoxImage"%>
+                <%= image_tag a.image, alt: a.title, class: "albumBoxImage"%>
                 <div class="caption">
                     <hr/>
                     <h3>

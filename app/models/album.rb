@@ -1,8 +1,26 @@
 class Album < ActiveRecord::Base
     belongs_to :user
     has_many :tracks, -> { order 'track_number ASC' }
-    has_one :album_listing
+    has_one :album_listing, :dependent => :destroy
 
+    def image
+        if (!self[:image].nil?) and 
+            (!self[:image].empty?) and
+            (checkImageExists(self[:image]))
+            return self[:image]
+        end
+        return "no_image.png"
+    end
+    
+    def small_image
+        if (!self[:small_image].nil?) and 
+            (!self[:small_image].empty?) and 
+            (checkImageExists(self[:small_image]))
+            return self[:small_image]
+        end
+        return "no_image_small.png"
+    end
+    
     def self.searchLastFM(term)
         term = I18n.transliterate(term)
     
@@ -29,6 +47,8 @@ class Album < ActiveRecord::Base
         
         imgUrl = ""
         imgSize = 0
+        smImgUrl = ""
+        smImgSize = 0
         response['album']['image'].each do |i|
             case i['size']
                 when "small"
@@ -48,6 +68,10 @@ class Album < ActiveRecord::Base
                 imgUrl = i['#text']
                 imgSize = currentSize
             end
+            if currentSize < smImgSize or smImgSize == 0
+                smImgUrl = i['#text']
+                smImgSize = currentSize
+            end
         end
                 
         tracks = []
@@ -64,10 +88,11 @@ class Album < ActiveRecord::Base
             position += 1
         end         
         
-        Album.new(  :title      =>  response['album']['name'],
-                    :artist     =>  response['album']['artist'],
-                    :image_url  =>  imgUrl,
-                    :tracks     =>  tracks )
+        Album.new(  :title           =>  response['album']['name'],
+                    :artist          =>  response['album']['artist'],
+                    :image           =>  imgUrl,
+                    :small_image     =>  smImgUrl,
+                    :tracks          =>  tracks )
     end
     
     def updateTrackOrder(movedTrack, newPosition)
@@ -96,6 +121,7 @@ class Album < ActiveRecord::Base
             t.save()
         end
     end
+
     private 
     
     def self.getJSONResponse(url)
@@ -103,4 +129,19 @@ class Album < ActiveRecord::Base
         urlresponse = Net::HTTP.get(uri)
         response = JSON.parse(urlresponse)
     end
+        
+    def checkImageExists(url)
+        uri = URI.parse(url)
+        
+        response = nil
+        Net::HTTP.start(uri.host, uri.port) {|http|
+            response = http.head(uri.path)
+        }
+
+        if response.code == '200'
+            return true
+        end
+        return false
+    end 
+
 end
