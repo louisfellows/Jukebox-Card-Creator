@@ -1,4 +1,6 @@
 class User < ActiveRecord::Base
+    has_one :card, :dependent => :destroy
+    after_create :create_card
 
     Roles = { :default => :default, :admin => :admin}
 
@@ -15,5 +17,10 @@ class User < ActiveRecord::Base
             user.save!
             user
         end
+    end
+    
+    private
+    def after_create(user)
+        Card.create! :user_id => user.id
     end
 end

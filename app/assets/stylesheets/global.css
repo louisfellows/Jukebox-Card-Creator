@@ -35,3 +35,7 @@
   cursor: hand;
   cursor: pointer;
 }
+
+.navbar-brand {
+  padding: 5px;
+}

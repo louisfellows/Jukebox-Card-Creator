@@ -3,6 +3,27 @@ class AlbumListingController < ApplicationController
     skip_load_resource :only => [:destroy]
 
     def index
+        if (Card.find_by(user_id: current_user.id).numbers == true)
+            redirect_to album_listing_numbered_path
+        else
+            redirect_to album_listing_unnumbered_path
+        end
+    end 
+    
+    def numbered
+        if (Card.find_by(user_id: current_user.id).numbers == false) 
+            redirect_to album_listing_unnumbered_path
+        end
+        
+        @albums = Album.where("user_id = ? AND id NOT IN (SELECT DISTINCT album_id FROM album_listings)", current_user.id);
+        @listings = AlbumListing.where(:user_id => current_user.id).order('number ASC')
+    end 
+    
+    def unnumbered
+        if (Card.find_by(user_id: current_user.id).numbers == true)
+            redirect_to album_listing_numbered_path
+        end
+        
         @albums = Album.where("user_id = ? AND id NOT IN (SELECT DISTINCT album_id FROM album_listings)", current_user.id);
         @listings = AlbumListing.where(:user_id => current_user.id).order('number ASC')
     end 

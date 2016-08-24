@@ -3,6 +3,7 @@ class Ability
 
     def initialize(user)
         alias_action :calendar => :read
+        alias_action :numbered, :unnumbered => :update
         
         user ||= User.new
 
@@ -22,6 +23,8 @@ class Ability
             can :update, User do |permission_user|
                 permission_user.id == user.id
             end            
+            can :read, Card
+            can :manage, Card, :user_id => user.id
         else #guest
             puts "GUEST"
             can :read, [Event, Location]

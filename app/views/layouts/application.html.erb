@@ -27,15 +27,14 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="/index">Jukeboxer</a>
+                    <a class="navbar-brand" href="/index">
+                        <%=image_tag("logo")%>
+                    </a>
                 </div>
 
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav navbar-right">
-                        <li>
-                            <%=link_to "<span class='fa fa-question-circle' aria-hidden='true'></span> About".html_safe, {:controller => "static", :action => "about"}%>
-                        </li>
                         <% if current_user %>  
                             <li>
                                 <%=link_to "<span class='fa fa-plus' aria-hidden='true'></span> Add Albums".html_safe, {:controller => "album", :action => "new"}%>
@@ -44,7 +43,7 @@
                                 <%=link_to "<span class='fa fa-edit' aria-hidden='true'></span> Manage Albums".html_safe, {:controller => "album"}%>
                             </li>
                             <li>
-                                <%=link_to "<span class='fa fa-print' aria-hidden='true'></span> Create Cards".html_safe, {:controller => "album_listing", :action => "index"}%>
+                                <%=link_to "<span class='fa fa-print' aria-hidden='true'></span> Create Cards".html_safe, {:controller => "card", :action => "edit" }%>
                             </li>
                             <ul class="nav navbar-nav pull-right">
                                 <li><%= image_tag current_user.image_url, alt: current_user.name, class: "img-circle"%></li>

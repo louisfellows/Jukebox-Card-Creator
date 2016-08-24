@@ -21,10 +21,17 @@ Rails.application.routes.draw do
         get "delete"
     end    
     
+    get 'album_listing/numbered' => 'album_listing#numbered'
+    get 'album_listing/unnumbered' => 'album_listing#unnumbered'    
     resources :album_listing
     
     delete 'album_listing/delete' => 'album_listing#destroy'
 
+    get   'card/edit' => 'card#edit'
+    patch 'card/'     => 'card#update'
+    get   'card'      => 'card#index'
+    #resources :card
+    
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

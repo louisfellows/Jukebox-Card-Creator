@@ -6,11 +6,7 @@
         $( ".draggable" ).draggable({
             cancel: ".close", 
             revert: "invalid", 
-            helper: function() {
-                img = $(this).find("img").attr("src");
-                return $( "<img src='"+img+"' style='width:64px; height:64px' class='img-circle'/>" );
-            },
-            cursorAt: { top: 30, left: 30 },
+            <%= render "draghelper" %>,
             zIndex: 100
         });
   
@@ -39,7 +35,7 @@
         $item.fadeOut(function() {
             addRemoveButton($item);
             var number_id = $target.attr("data-id");
-            var album_id = $item.attr("data-id")
+            var album_id = $item.attr("data-id");
             $.ajax({
                 type: 'POST',
                 url: '/album_listing',
@@ -90,24 +86,7 @@
 
 
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <h3 class="panel-title">
-                        Card Creation - Step 1
-                    </h3>
-                </div>
-                <div class="panel-body">
-                    Please move the albums to their position in the Jukebox album listing on the left. The position will be used to assign numbers to the cards.
-                </div>
-                <div class="panel-footer">
-                    <%=link_to "<span class='fa fa-arrow-right' aria-hidden='true'></span> Select Styles".html_safe,  {:controller => "card", :action => "edit", :id => Card.find_by(user_id: current_user.id)}, class: "btn pull-right btn-primary" %>
-                    <div class="clearfix"></div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <%= render "headerbox" %>
     <div class="row">
         <div class="col-md-6">
             <div class="panel panel-info">

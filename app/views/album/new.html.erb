@@ -30,6 +30,14 @@
                         $("#added_albums").prepend(temp);
                         $("#added_albums").trigger( "refreshGrid");
                         $("#title_search").val("");
+                        
+                        $.bootstrapPurr("<b>Added: </b>" + data.title, {
+                            type:'info',
+                                offset: {
+                                    amount: 60,
+                                    from: 'top'
+                                }
+                            });
                     })
                     .fail(function(xhr, ajaxOptions, thrownError) {
                             $.bootstrapPurr("<b>An Error Occurred: </b>" + thrownError, {
@@ -60,6 +68,21 @@
         });
     });
 </script>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="jumbotron">
+            <h2>
+                Add Albums
+            </h2>
+            <p>
+                Use the text box below to search for an Album, select the one you want from the list and it'll be added to your library.
+                
+                You can modify Album info on the 'Manage Albums' page.
+            </p>
+        </div>
+    </div>
+</div>
 
 <div class="container-fluid">
     <fieldset class="form-group row">

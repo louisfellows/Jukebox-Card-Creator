@@ -1,0 +1,26 @@
+// Place all the styles related to the card controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+label > input{ /* HIDE RADIO */
+  visibility: hidden; /* Makes input not-clickable */
+  position: absolute; /* Remove input from document flow */
+}
+label > input + div { /* IMAGE STYLES */
+  cursor:pointer;
+}
+label > input:checked + div { /* (RADIO CHECKED) IMAGE STYLES */
+  border:1px solid #3a87ad;
+}
+label > input + div:hover{ /* IMAGE STYLES */
+  cursor:pointer;
+  border:1px solid #c09853;
+}
+
+label > input:checked + div > .panel-footer { /* (RADIO CHECKED) IMAGE STYLES */
+  background-color: #3a87ad;
+}
+label > input + div:hover > .panel-footer { /* IMAGE STYLES */
+  cursor:pointer;
+  background-color: #c09853;
+}

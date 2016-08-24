@@ -23,6 +23,19 @@
     
 </script>
 
+<div class="row">
+    <div class="col-md-12">
+        <div class="jumbotron">
+            <h2>
+                Modify Albums
+            </h2>
+            <p>
+                Below is the collection of all the albums that are in your library. Use this screen to make any changes to the albums before they go to print.
+            </p>
+        </div>
+    </div>
+</div>
+
 <ul id="albums" style="list-style: none;">
     <% @albums.each do |a| %>
         <li id="album-<%=a.id%>" style="width:300px;" >

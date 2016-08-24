@@ -122,23 +122,24 @@ class Album < ActiveRecord::Base
         end
     end
 
+    def getTracksAsTable
+        table = []
+        tracks.each do |track|
+            table.push(["#{track.track_number}.", track.track_name])
+        end
+        return table
+    end
+    
     private 
     
     def self.getJSONResponse(url)
-        uri = URI(url)
-        urlresponse = Net::HTTP.get(uri)
-        response = JSON.parse(urlresponse)
+        urlresponse = HTTParty.get(url)
+        response = JSON.parse(urlresponse.body)
     end
         
     def checkImageExists(url)
-        uri = URI.parse(url)
-        
-        response = nil
-        Net::HTTP.start(uri.host, uri.port) {|http|
-            response = http.head(uri.path)
-        }
-
-        if response.code == '200'
+        response = HTTParty.get(url)
+        if response.code == 200
             return true
         end
         return false

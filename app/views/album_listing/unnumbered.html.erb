@@ -1,0 +1,84 @@
+<script>
+    $(function() {
+        $( "#unselected_albums" ).sortable({
+            connectWith: "#selected_albums",
+            placeholder: "highlight",
+            receive: function(event, ui) {
+                console.log(ui.item);
+                removeFromList(ui.item);
+            },
+            <%= render "draghelper" %>
+        }).disableSelection();
+        
+        $( "#selected_albums" ).sortable({
+            connectWith: "#unselected_albums",
+            placeholder: "highlight",
+            receive: function(event, ui) {
+                console.log(ui.item);
+                addToList(ui.item);
+            },
+            <%= render "draghelper" %>
+        }).disableSelection();
+    } );
+
+    function addToList( $item ) {        
+        var album_id = $item.attr("data-id");
+        $.ajax({
+            type: 'POST',
+            url: '/album_listing',
+            dataType: 'json',
+            data: { album_listing: {number: 0, album_id: album_id } }
+        });
+    }
+    
+    function removeFromList( $item ) {
+        var album_id = $item.attr("data-id");
+        $.ajax({
+            type: 'DELETE',
+            url: '/album_listing/delete',
+            dataType: 'json',
+            data: { number: 0, album_id: album_id }
+        });
+    }
+        
+</script>
+
+
+
+<div class="container-fluid">
+    <%= render "headerbox" %>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        Unselected Albums
+                    </h3>
+                </div>
+                <div class="panel-body" style="max-height: 600px; overflow-y:scroll">
+                    <div id="unselected_albums" class="list-group">
+                        <% @albums.each do |a| %>
+                            <%= render "albumbox", album: a, removeButton: false %>
+                        <% end %>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        Selected Albums
+                    </h3>
+                </div>
+                <div class="panel-body" style="max-height: 600px; overflow-y:scroll">
+                    <div id = "selected_albums" class="list-group">
+                        <% @listings.each do |l| %>
+                            <%= render "albumbox", album: l.album, removeButton: false %>
+                        <% end %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

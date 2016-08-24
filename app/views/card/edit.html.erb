@@ -1,0 +1,91 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="jumbotron">
+            <h2>
+                Modify Albums
+            </h2>
+            <p>
+                Use this screen to decide how your cards will look. Pressing save and continue will let you decide which albums to create cards for and, if necessary, the order they will appear in. 
+            </p>
+        </div>
+    </div>
+</div>
+
+<%= form_for @card, :html => {:class => "form-horizontal"}, :url => {:action => "update"} do |f| %>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <h2>Card Alignment</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+                <label>
+                    <%= f.radio_button :style, "1" %>
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                                <%= image_tag("card_style_1.png", size: "225x150", alt: "Image Left") %>
+                        </div>
+                        <div class="panel-footer">
+                            Image Left
+                        </div>
+                    </div>
+                </label>
+            </div>
+            <div class="col-md-2">
+                <label>
+                    <%= f.radio_button :style, "2" %> 
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <%= image_tag("card_style_2.png", size: "225x150", alt: "Image Right") %>
+                        </div>
+                        <div class="panel-footer">
+                            Image Right
+                        </div>
+                    </div>
+                </label>
+            </div>
+            <div class="col-md-8">
+            
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h2> Card Options </h2>
+            </div>
+            <div class="panel-body">
+                <fieldset class="form-group row">
+                    <label class="control-label col-md-1" for="card_font">Font</label>
+                    <div class="col-md-8">
+                        <%=f.select :font, Card::FONTS, {}, {class: "form-control"}%>
+                    </div>
+                </fieldset>
+                <fieldset class="form-group row">
+                    <label class="control-label col-md-1" for="card_numbers">Display Numbers</label>
+                    <div class="col-md-8">
+                        <%=f.select :numbers, Card::NUMBERS, {}, {class: "form-control"}%>
+                    </div>
+                </fieldset>
+                <fieldset class="form-group row">
+                    <label class="control-label col-md-1" for="card_height">Height</label>
+                    <div class="col-md-8">
+                        <div class="input-group">
+                            <%=f.number_field :height, {min: 1, max: 29, step: 0.5, class: "form-control"}%>
+                            <span class="input-group-addon" id="height-cm">CM</span>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset class="form-group row">
+                    <label class="control-label col-md-1" for="card_width">Width</label>
+                    <div class="col-md-8">
+                        <div class="input-group">
+                            <%=f.number_field :width, {min: 1, max: 21, step: 0.5, class: "form-control"}%>
+                            <span class="input-group-addon" id="width-cm">CM</span>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+        <%= f.submit "Save and Continue".html_safe, class: "btn btn-primary btn-block"%>
+    </div>
+<% end -%>

@@ -1,0 +1,29 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    Select Cards
+                </h3>
+            </div>
+            <div class="panel-body">
+                Please move the albums to their position in the Jukebox album listing on the left. The position will be used to assign numbers to the cards.
+            </div>
+            <div class="panel-footer">
+                <%=link_to "<span id='icon' class='fa fa-arrow-right' aria-hidden='true'></span> Generate Cards".html_safe,  {:controller => :card, :action => :index, :format => :pdf}, class: "btn pull-right btn-primary", id: "genBtn" %>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $( function() {
+        $('#genBtn').click(function() {
+            $('#genBtn').addClass("disabled").html("<span id='icon' class='fa fa-circle-o-notch fa-spin fa-fw' aria-hidden='true'></span> Generating Cards");
+            var timeoutID = window.setTimeout(function() {
+                $('#genBtn').removeClass("disabled").html("<span id='icon' class='fa fa-arrow-right' aria-hidden='true'></span> Generate Cards");
+            }, 20000);
+        });
+    });
+</script>
