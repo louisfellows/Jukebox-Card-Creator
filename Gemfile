@@ -71,4 +71,4 @@ gem 'httparty'
 # heroku
 gem 'rails_12factor', group: :production
 
-ruby "2.2.5"
+ruby "2.2.4"
