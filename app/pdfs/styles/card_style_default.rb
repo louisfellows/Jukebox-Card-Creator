@@ -1,4 +1,5 @@
 class CardStyleDefault < Object
+    # Contains style options for the printing of Cards to PDF.
 
     @layoutOptions = nil
     $WIDTH = 18.cm

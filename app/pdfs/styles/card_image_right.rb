@@ -1,4 +1,5 @@
 class CardImageRight < CardStyleDefault
+    # Contains style options for the printing of Cards to PDF.
     
     def getImageDimensions
         listingWidth = $WIDTH - $HEIGHT

@@ -1,4 +1,6 @@
 class CardPdf < Prawn::Document
+    # Creates a PDF containing chosen cards build with specified styles.
+
     require "prawn"
     require "prawn/measurement_extensions"
     require "open-uri"

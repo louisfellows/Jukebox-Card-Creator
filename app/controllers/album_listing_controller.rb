@@ -10,6 +10,9 @@ class AlbumListingController < ApplicationController
         end
     end 
     
+    # numbered and unnumbered are separate views as last.fm can give both numbered and unnumbered track listings. The views
+    # are separate, but the controller section for both is identical. 
+    # TODO: is there a way to combine these and still have separate pages and eliminate the repeated code?
     def numbered
         if (Card.find_by(user_id: current_user.id).numbers == false) 
             redirect_to album_listing_unnumbered_path

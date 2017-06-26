@@ -21,6 +21,7 @@ class Album < ActiveRecord::Base
         return "no_image_small.png"
     end
     
+    # Search Last.fm for an album and return an array of results.
     def self.searchLastFM(term)
         term = I18n.transliterate(term)
     
@@ -37,6 +38,7 @@ class Album < ActiveRecord::Base
         results
     end
     
+    # Search Last.fm for a specific album, create a new Album object from the response and return it.
     def self.getAlbumFromLastFM(artist, album)
         artist = I18n.transliterate(artist)
         album = I18n.transliterate(album)
@@ -95,6 +97,7 @@ class Album < ActiveRecord::Base
                     :tracks          =>  tracks )
     end
     
+    # Move a tracks position in the track listing of an album, update other tracks to maintain the track listing.
     def updateTrackOrder(movedTrack, newPosition)
         tracklist = tracks.order('tracks.track_number ASC').all
         position = 1
@@ -112,6 +115,7 @@ class Album < ActiveRecord::Base
         end
     end
         
+    # Update all track numbers to ensure listing from 1->x and fix errored numbering from Last.fm.
     def normaliseTrackOrder
         tracklist = tracks.order('tracks.track_number ASC').all
         position = 1
@@ -122,6 +126,7 @@ class Album < ActiveRecord::Base
         end
     end
 
+    # Returns a array of numbered tracks for use in a table.
     def getTracksAsTable
         table = []
         tracks.each do |track|

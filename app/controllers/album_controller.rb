@@ -40,6 +40,7 @@ class AlbumController < ApplicationController
         @album = Album.find(params[:album_id])
     end
     
+    # Search Last.fm for a list of albums matching the search term, return them as a JSON list.
     def search
         respond_to do |format|
             format.json do
@@ -56,6 +57,7 @@ class AlbumController < ApplicationController
         end
     end
     
+    # Get album data from Last.fm and create a new album. Save the new album to the database.
     def addAlbum
         respond_to do |format|
             format.json do
@@ -67,13 +69,14 @@ class AlbumController < ApplicationController
         end
     end
     
+    # Change a tracks position on an album.
     def updateRowOrder
         respond_to do |format|
             format.json do
                 puts (:params)
                 movedTrack = Track.find(params[:track][:track_id])
                 newPosition = params[:track][:row_order_position].to_i
-                newPosition += 1 #jQuery is 0 indexed, out albums are 1 indexed
+                newPosition += 1 #jQuery is 0 indexed, our albums are 1 indexed
                 album = movedTrack.album
                 album.updateTrackOrder(movedTrack, newPosition)
                 render :json => album.as_json(include: :tracks)

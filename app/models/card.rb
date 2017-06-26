@@ -1,4 +1,5 @@
 class Card < ActiveRecord::Base
+    # Stores card visual settings.
     belongs_to :user
     
     FONTS = { 'Helvetica' => 1, 'Times-Roman' => 2, 'Courier' => 3 } #, 'Symbol' => 4, 'ZapfDingbats'=> 5 }

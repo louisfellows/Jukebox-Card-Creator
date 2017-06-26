@@ -1,10 +1,12 @@
 <script type="text/javascript">
     $(function() {
+        //Arranges Cards
         $('#albums').freetile({
             animate: true,
             elementDelay: 0,
             customEvents: "refreshGrid"
         });
+        //Sets up sortable track listing on card body
         $('.sortable tbody').sortable({
             axis: "y",
             update: function( event, ui ) {
